@@ -1,3 +1,27 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "components/*": ["components/*"],
+      "assets/*": ["assets/*"],
+      "screens/*": ["screens/*"],
+      "hooks/*": ["hooks/*"],
+      "utils/*": ["utils/*"],
+      "types/*": ["types/*"]
+    },
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "lint": {
+          "validProperties": [
+            "margin-vertical",
+            "margin-horizontal",
+            "padding-horizontal",
+            "padding-vertical"
+          ]
+        }
+      }
+    ]
+  }
 }
