@@ -39,7 +39,7 @@ const StyledButton = styled.TouchableOpacity<{
   align-items: center;
   border-radius: 40px;
   flex-direction: row;
-  ${({icon}) => (icon ? 'gap: 4px;' : '')};
+  gap: 4px;
 `;
 
 const ButtonText = styled.Text<{textColor: string}>`
