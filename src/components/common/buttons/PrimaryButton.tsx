@@ -1,4 +1,5 @@
 import React from 'react';
+import {ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 
 type PrimaryButtonProps = {
@@ -7,10 +8,12 @@ type PrimaryButtonProps = {
   backgroundColor?: string;
   textColor?: string;
   onPress: () => void;
+  customStyle?: ViewStyle;
 };
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   text,
+  customStyle,
   icon,
   backgroundColor = '#fff',
   textColor = '#040415',
@@ -18,6 +21,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 }) => {
   return (
     <StyledButton
+      style={customStyle}
       onPress={onPress}
       backgroundColor={backgroundColor}
       activeOpacity={0.7}>

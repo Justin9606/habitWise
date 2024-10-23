@@ -13,6 +13,7 @@ module.exports = {
           hooks: './src/hooks',
           utils: './src/utils',
           types: './src/types',
+          navigators: './src/navigators',
         },
       },
     ],
