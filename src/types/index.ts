@@ -6,4 +6,5 @@ export type Habit = {
   timesPerDay: number;
   habitType: string;
   color: string;
+  isCompleted: boolean;
 };
