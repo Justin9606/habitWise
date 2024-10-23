@@ -1,5 +1,5 @@
-import React from 'react';
-import {FlatList, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, TouchableOpacity, TextInput} from 'react-native';
 import styled from 'styled-components/native';
 import {useRecoilState} from 'recoil';
 import {habitState} from '../context/habitAtom';
@@ -8,14 +8,24 @@ import Svg, {Circle} from 'react-native-svg';
 
 const HomeScreen = () => {
   const [habits, setHabits] = useRecoilState(habitState);
+  const [editModeId, setEditModeId] = useState<number | null>(null);
+  const [newHabitName, setNewHabitName] = useState('');
 
-  // Function to toggle habit completion
   const toggleCompletion = (id: number) => {
     setHabits(prevHabits =>
       prevHabits.map(habit =>
         habit.id === id ? {...habit, isCompleted: !habit.isCompleted} : habit,
       ),
     );
+  };
+
+  const saveHabitName = (id: number) => {
+    setHabits(prevHabits =>
+      prevHabits.map(habit =>
+        habit.id === id ? {...habit, name: newHabitName} : habit,
+      ),
+    );
+    setEditModeId(null);
   };
 
   const renderGreeting = () => (
@@ -33,7 +43,7 @@ const HomeScreen = () => {
       totalGoals > 0 && (
         <DailyGoalsContainer>
           <GoalText>
-            Your daily goals almost done! {completedGoals} of {totalGoals}{' '}
+            Your daily goals almost done! {completedGoals} of {totalGoals}
             completed
           </GoalText>
           <ProgressBar completed={completedGoals} total={totalGoals} />
@@ -45,18 +55,50 @@ const HomeScreen = () => {
   const renderHabits = ({item}: any) => (
     <HabitContainer>
       <Row>
-        <HabitText>{item.name}</HabitText>
-        <TouchableOpacity onPress={() => toggleCompletion(item.id)}>
-          <ProgressCircle
-            progress={item.isCompleted ? 100 : 0}
-            size={40}
-            isCompleted={item.isCompleted}
-          />
-        </TouchableOpacity>
+        {editModeId === item.id ? (
+          <>
+            <TextInput
+              value={newHabitName}
+              onChangeText={setNewHabitName}
+              placeholder="Edit habit name"
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#ddd',
+                padding: 4,
+                width: '70%',
+              }}
+            />
+            <TouchableOpacity onPress={() => saveHabitName(item.id)}>
+              <SaveButton>Save</SaveButton>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <HabitDetails>
+              <HabitText>{item.name}</HabitText>
+              <FrequencyText>
+                {item.timesPerDay} {item.frequency}
+              </FrequencyText>
+            </HabitDetails>
+            <RightColumn>
+              <TouchableOpacity onPress={() => toggleCompletion(item.id)}>
+                <ProgressCircle
+                  progress={item.isCompleted ? 100 : 0}
+                  size={40}
+                  isCompleted={item.isCompleted}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setEditModeId(item.id);
+                  setNewHabitName(item.name);
+                }}>
+                <EditButton>Edit</EditButton>
+              </TouchableOpacity>
+            </RightColumn>
+          </>
+        )}
       </Row>
-      <FrequencyText>
-        {item.timesPerDay} {item.frequency}
-      </FrequencyText>
     </HabitContainer>
   );
 
@@ -123,7 +165,6 @@ const ProgressCircle = ({
 
 export default HomeScreen;
 
-// Styled Components
 const Container = styled.View`
   flex: 1;
   padding: 16px;
@@ -187,6 +228,15 @@ const Row = styled.View`
   align-items: center;
 `;
 
+const HabitDetails = styled.View`
+  width: 70%;
+`;
+
+const RightColumn = styled.View`
+  flex-direction: column;
+  align-items: center;
+`;
+
 const HabitText = styled.Text`
   font-size: 16px;
   font-weight: bold;
@@ -195,6 +245,17 @@ const HabitText = styled.Text`
 const FrequencyText = styled.Text`
   font-size: 14px;
   color: #999;
+`;
+
+const EditButton = styled.Text`
+  font-size: 14px;
+  color: #3843ff;
+  margin-top: 8px;
+`;
+
+const SaveButton = styled.Text`
+  font-size: 14px;
+  color: #4caf50;
 `;
 
 const EmptyText = styled.Text`
